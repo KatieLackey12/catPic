@@ -17,7 +17,7 @@ private:
 
 void CatPicApp::setup()
 {
-	brightness = .1;
+	brightness = .2;
 }
 
 void CatPicApp::mouseDown( MouseEvent event )
