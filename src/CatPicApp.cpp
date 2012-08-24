@@ -17,7 +17,7 @@ private:
 
 void CatPicApp::setup()
 {
-	brightness = .2;
+	brightness = .1;
 }
 
 void CatPicApp::mouseDown( MouseEvent event )
@@ -35,7 +35,7 @@ void CatPicApp::update()
 void CatPicApp::draw()
 {
 	// clear out the window with black
-	gl::clear( Color( brightness, brightness, brightness ) ); 
+	gl::clear( Color( brightness, 2, brightness ) ); 
 }
 
 CINDER_APP_BASIC( CatPicApp, RendererGl )
