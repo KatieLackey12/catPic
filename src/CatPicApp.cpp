@@ -27,9 +27,8 @@ void CatPicApp::mouseDown( MouseEvent event )
 void CatPicApp::update()
 {
 	brightness = brightness + .01;
-	if(brightness>1){
+	if(brightness>1)
 		brightness=0;
-	}
 }
 
 void CatPicApp::draw()
