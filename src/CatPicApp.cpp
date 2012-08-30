@@ -21,6 +21,14 @@ private:
 	//Brightness of the screen
 	//float brightness;
 	Surface* mySurface_; 
+
+
+	struct circleData{
+		int x;
+		int y;
+		int r;
+	};
+	//deque<rings_info> rings_list_;
 	//width and height of the screen
 	static const int kAppWidth=800;
 	static const int kAppHeight=600;
@@ -28,6 +36,7 @@ private:
 	
 void CreateRectangle(uint8_t* pixels, int x1, int y1, int x2, int y2);
 void drawLine(uint8_t*pixels, int line1_width, int line2_height);
+void drawCircles(uint8_t* dataArray, int x, int y, int r);
 
 };
 void CatPicApp::CreateRectangle(uint8_t* dataArray, int x1, int y1, int x2, int y2){
@@ -47,18 +56,20 @@ void CatPicApp::CreateRectangle(uint8_t* dataArray, int x1, int y1, int x2, int 
 	//making the rectangle
 	for ( int y=10; y <= endy; y++){		
 		for ( int x = 20; x <= endx; x++) {		
-			dataArray [3* (x+y*endx)]=40;			
-			dataArray [3* (x+y*endx)+1]=80;			
+			dataArray [3* (x+y*endx)]=20;			
+			dataArray [3* (x+y*endx)+1]=40;			
 			dataArray [3* (x+y*endx)+2]=30;					
 		}		
 	}
 }
 void CatPicApp::drawLine(uint8_t*dataArray, int line1_width, int line2_height){
-	
+	//making a line
 	for(int i=0; i<=line1_width;i++){
-		dataArray[3*i]=20;
-		dataArray[3*i+1]=40;
-		dataArray[3*i+2]=60;
+		//for(int i=0; line2_height;i++){
+		dataArray[3*i]=10;
+		dataArray[3*i+1]=10;
+		dataArray[3*i+2]=10;
+		//}
 }
 }
 
@@ -72,18 +83,30 @@ void CatPicApp::setup(){
 	mySurface_=new Surface(kTextureSize, kTextureSize, false);
 	
 	//brightness = .1;
+
+	
 }
 
 void CatPicApp::mouseDown( MouseEvent event )
 {
 }
-
+void CatPicApp::drawCircles(uint8_t* dataArray, int center_x, int center_y, int r){
+	//if(r<=0) return;	
+	for (int y=center_y-r; y<=center_y+r; y++){		
+		for (int x=center_x-r; x<=center_x+r; x++) {		
+			dataArray [3* (y+center_x*r)]=30;			
+			dataArray [3* (y+center_x*r)+1]=255;			
+			dataArray [3* (y+center_x*r)+2]=30;					
+		}		
+	}
+	
+}
 void CatPicApp::update(){
 	uint8_t* dataArray = (*mySurface_).getData();
 	//needed to draw the application on the screen
-	CreateRectangle(dataArray, 500,300,500,300);
+	CreateRectangle(dataArray, 300,500,300,500);
 	drawLine(dataArray,40,30);
-	
+	drawCircles(dataArray, 400, 200, 100);
 	
 	//brightness = brightness + .01;
 	//if(brightness>1)
