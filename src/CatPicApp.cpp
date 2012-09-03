@@ -32,7 +32,7 @@ private:
 	//width and height of the screen
 	static const int kAppWidth=800;
 	static const int kAppHeight=600;
-	static const int kTextureSize=1024;
+	static const int kSurfaceSize=1024;
 	
 void CreateRectangle(uint8_t* pixels, int x1, int y1, int x2, int y2);
 void drawLine(uint8_t*pixels, int line1_width, int line2_height);
@@ -40,6 +40,7 @@ void drawCircles(uint8_t* dataArray, int x, int y, int r);
 
 };
 void CatPicApp::CreateRectangle(uint8_t* dataArray, int x1, int y1, int x2, int y2){
+	
 	int startx = (x1 < x2) ? x1 : x2;
 	int endx = (x1 < x2) ? x2 : x1;
 	int starty = (y1 < y2) ? y1 : y2;
@@ -56,9 +57,9 @@ void CatPicApp::CreateRectangle(uint8_t* dataArray, int x1, int y1, int x2, int 
 	//making the rectangle
 	for ( int y=10; y <= endy; y++){		
 		for ( int x = 20; x <= endx; x++) {		
-			dataArray [3* (x+y*endx)]=20;			
-			dataArray [3* (x+y*endx)+1]=40;			
-			dataArray [3* (x+y*endx)+2]=30;					
+			dataArray [3* (x+y*kSurfaceSize)]=20;			
+			dataArray [3* (x+y*kSurfaceSize)+1]=40;			
+			dataArray [3* (x+y*kSurfaceSize)+2]=30;					
 		}		
 	}
 }
@@ -80,7 +81,7 @@ void CatPicApp::prepareSettings(Settings* settings){
 	(*settings).setResizable(false);
 }
 void CatPicApp::setup(){
-	mySurface_=new Surface(kTextureSize, kTextureSize, false);
+	mySurface_=new Surface(kSurfaceSize, kSurfaceSize, false);
 	
 	//brightness = .1;
 
@@ -91,22 +92,29 @@ void CatPicApp::mouseDown( MouseEvent event )
 {
 }
 void CatPicApp::drawCircles(uint8_t* dataArray, int center_x, int center_y, int r){
-	//if(r<=0) return;	
+	if(r<=0) return;	
+	//int distanceFromCenter = (int)sqrt((double)((x-center_x)*(x-center_x)+(y-center_y)*(y-center_y)));
 	for (int y=center_y-r; y<=center_y+r; y++){		
-		for (int x=center_x-r; x<=center_x+r; x++) {		
-			dataArray [3* (y+center_x*r)]=30;			
-			dataArray [3* (y+center_x*r)+1]=255;			
-			dataArray [3* (y+center_x*r)+2]=30;					
-		}		
+		for (int x=center_x-r; x<=center_x+r; x++) {
+			if(y<0 || x<0 || x>= kAppWidth || y>= kAppHeight) 
+				continue;
+			int distanceFromCenter = (int)sqrt((double)((x-center_x)*(x-center_x) + (y-center_y)*(y-center_y)));
+			if(distanceFromCenter <=r){
+				int offset = 3*(x+y*kSurfaceSize);
+			dataArray[offset] = dataArray[offset]/2;			
+			dataArray[offset] = dataArray[offset]/2;			
+			dataArray[offset] = dataArray[offset]/2;					
+		}
+		}
 	}
 	
 }
 void CatPicApp::update(){
 	uint8_t* dataArray = (*mySurface_).getData();
 	//needed to draw the application on the screen
-	CreateRectangle(dataArray, 300,500,300,500);
+	CreateRectangle(dataArray, 200,100,200,100);
 	drawLine(dataArray,40,30);
-	drawCircles(dataArray, 400, 200, 100);
+	drawCircles(dataArray, 500, 300, 100);
 	
 	//brightness = brightness + .01;
 	//if(brightness>1)
