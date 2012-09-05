@@ -27,6 +27,8 @@ private:
 	//float brightness;
 	//surface area that will have the shapes on it
 	Surface* mySurface_; 
+	//an int used to make objects move
+	int draw_offset;
 
 	//the variables for the drawCircle method
 	struct circleData{
@@ -48,13 +50,13 @@ void drawCircle2(uint8_t* dataArray, int x, int y, int r);
 void drawCircle3(uint8_t* dataArray, int x, int y, int r);
 //Method makes a bunch of lines on the screen
 void makeLine(uint8_t* dataArray, int x0, int y0, int x1, int y1);
-//Method make a copy of the rectangle already created
-void copyRectangle(uint8_t* dataArray, int x_width, int y_height, int x_origin, int y_origin, int y_original_rect);
 //Method blurs the edges of the shapes
 void selectiveBlur(uint8_t* blur_pattern);
 //void drawAccident(uint8_t* pixels, int center_x, int center_y, int r);
 //Method clears the screen each time it is rain by painting it white first. Then the shapes are painted ontop if it.
 void clear(uint8_t* dataArray);
+//Method draws a rectangle onto the screen
+void drawTriangle(uint8_t* dataArray, int sideLength, int pointX,int pointY);
 
 };
 
@@ -79,7 +81,8 @@ void CatPicApp::CreateRectangle(uint8_t* dataArray, int x1, int y1, int x2, int 
 	int endx = (x1 < x2) ? x2 : x1;
 	int starty = (y1 < y2) ? y1 : y2;
 	int endy = (y1 < y2) ? y2 : y1;
-
+	//x1 y1
+		//x2 y1
 	//checking the boundary 
 	if(endx < 0) return; 
 	if(endy < 0) return; 
@@ -89,14 +92,43 @@ void CatPicApp::CreateRectangle(uint8_t* dataArray, int x1, int y1, int x2, int 
 	if(endy >= kAppHeight) endy = kAppHeight-1;
 
 	//making the rectangle
-	for ( int y=10; y <= endy; y++){		
-		for ( int x = 20; x <= endx; x++) {		
+	for ( int y=starty; y <= endy; y++){		
+		for ( int x = startx; x <= endx; x++) {		
 			dataArray [3* (x+y*kSurfaceSize)]=20;			
 			dataArray [3* (x+y*kSurfaceSize)+1]=40;			
 			dataArray [3* (x+y*kSurfaceSize)+2]=30;					
 		}		
 	}
 }
+void CatPicApp::drawTriangle(uint8_t* dataArray, int sideLength, int pointX,int pointY){
+if((pointX<=kAppWidth)&&((pointX + sideLength) <= kAppWidth)){
+
+	int x = pointX;
+	int y = pointY;
+
+	for(int side1=0; side1<= sideLength; side1++){
+		dataArray[3*(x+y*kSurfaceSize)] =0;
+		dataArray[3*(x+y*kSurfaceSize)+1] =0;
+		dataArray[3*(x+y*kSurfaceSize)+2] =225;
+		x=x+1;
+		y=y+1;
+	}
+	for(int side1=0; side1<= sideLength*2; side1++){
+		dataArray[3*(x+y*kSurfaceSize)] =0;
+		dataArray[3*(x+y*kSurfaceSize)+1] =0;
+		dataArray[3*(x+y*kSurfaceSize)+2] =225;
+		x=x-1;
+}
+	for(int side1=0; side1<= sideLength; side1++){
+		dataArray[3*(x+y*kSurfaceSize)] =0;
+		dataArray[3*(x+y*kSurfaceSize)+1] =0;
+		dataArray[3*(x+y*kSurfaceSize)+2] =225;
+		x=x+1;
+		y=y-1;
+}
+}
+}
+
 /*This method draws a straight line when the program is ran. 
 fills requirement 1
 */
@@ -136,9 +168,9 @@ void CatPicApp::drawCircles(uint8_t* dataArray, int center_x, int center_y, int 
 			int distanceFromCenter = (int)sqrt((double)((x-center_x)*(x-center_x) + (y-center_y)*(y-center_y)));
 			if(distanceFromCenter <=r){
 				int offset = 3*(x+y*kSurfaceSize);
-			dataArray[offset] = dataArray[offset]/2;			
-			dataArray[offset] = dataArray[offset]/2;			
-			dataArray[offset] = dataArray[offset]/2;					
+			dataArray[offset] = 50;			
+			dataArray[offset+1] = 30;			
+			dataArray[offset+2] = 102;					
 		}
 		}
 	}
@@ -154,9 +186,9 @@ if(r<=0) return;
 			int distanceFromCenter = (int)sqrt((double)((x-center_x)*(x-center_x) + (y-center_y)*(y-center_y)));
 			if(distanceFromCenter <=r){
 				int offset = 3*(x+y*kSurfaceSize);
-			dataArray[offset] = dataArray[offset]/2;			
-			dataArray[offset] = dataArray[offset]/2;			
-			dataArray[offset] = dataArray[offset]/2;					
+			dataArray[offset] = 50;			
+			dataArray[offset+1] = 30;			
+			dataArray[offset+2] = 102;					
 		}
 		}
 	}
@@ -172,38 +204,19 @@ if(r<=0) return;
 			int distanceFromCenter = (int)sqrt((double)((x-center_x)*(x-center_x) + (y-center_y)*(y-center_y)));
 			if(distanceFromCenter <=r){
 				int offset = 3*(x+y*kSurfaceSize);
-			dataArray[offset] = dataArray[offset]/2;			
-			dataArray[offset] = dataArray[offset]/2;			
-			dataArray[offset] = dataArray[offset]/2;					
+			dataArray[offset] = 50;			
+			dataArray[offset+1] = 30;			
+			dataArray[offset+2] = 102;					
 		}
 		}
 	}
 
-}
-/**This method creates and copy of the inital rectangle.
-fills requirement 1
-*/
-void CatPicApp::copyRectangle(uint8_t* dataArray, int x_width, int y_height, int x_origin, int y_origin, int y_original_rect){
-	int offSet = (y_origin - y_original_rect);
-	if((x_width < kAppWidth) && ((y_height + y_origin) < kAppHeight)){
-	for(int i = y_origin; i<= (y_height + y_origin); i++){
-		for(int j= x_origin; j<= (x_origin + x_width); j++){
-			dataArray[3*(i+j*kSurfaceSize)] = dataArray[3*(i +(j-offSet)*kSurfaceSize)]=10;
-			dataArray[3*(i+j*kSurfaceSize)] = dataArray[3*(i +(j-offSet)*kSurfaceSize+1)]=20;
-			dataArray[3*(i+j*kSurfaceSize)] = dataArray[3*(i +(j-offSet)*kSurfaceSize)+2]=0;
-		}
-	}
-}
 }
 /**This method is a blue method and it blues the edges of the shapes
 to make the look less crsip.
 fills requirement 2
 */
 void CatPicApp::selectiveBlur(uint8_t* blur_pattern){
-	float kernel[9] = 
-	{ 1/9.0,1/9.0,1/9.0,
-	1/9.0,1/9.0,1/9.0,
-	1/9.0,1/9.0,1/9.0};
 	for(int y=1; y<= kAppHeight-1; y++){
 		for (int x=1; x<= kAppWidth-1; x++){
 			int totalR = 0;
@@ -222,7 +235,6 @@ void CatPicApp::selectiveBlur(uint8_t* blur_pattern){
 			blur_pattern[3*(y+x*kSurfaceSize)+2]=totalB/9;
 		}//calculate the offset for y and x
 	}
-	kernel[9];
 }
 
 /**This method makes a few line segmenst that go across the screen
@@ -230,46 +242,23 @@ when ran. It is a bunch of dots that a alligned very close to each other to
 look like a line.
 fills requirement 1
 */
-void CatPicApp:: makeLine(uint8_t* dataArray, int x0, int y0, int x1, int y1){
+void CatPicApp:: makeLine(uint8_t* dataArray, int pt1x, int pt1y, int pt2x, int pt2y){
 	int x, offset;
-	float dy, dx, y, m;
-	dy = y1-y0;
-	dx = x1-x0;
-	m = dy/dx;//find the midpoint
-	y = y0;
+	float disy, disx, y, midPt;
+	disy = pt2y-pt1y;
+	disx = pt2x-pt1x;
+	midPt = disy/disx;//find the midpoint
+	y = pt1y;
 
-	for(x = x0; x <= x1; x++){
+	for(x = pt1x; x <= pt2x; x++){
 		offset = 3 *(x + (y*kSurfaceSize));
 
 		dataArray[offset]=225;
 		dataArray[offset+1]=0;
 		dataArray[offset+2]=0;
-		y = y+m; 
+		y = y+midPt; 
 	}
 }
-
-/*void CatPicApp::drawAccident(uint8_t* pixels, int center_x, int center_y, int r){
-	//Bounds test
-	if(r <= 0) return;
-	
-	int r2 = r*r;
-	for(int y=center_y-r; y<=center_y+r; y++){
-		for(int x=center_x-r; x<=center_x+r; x++){
-			//Bounds test, to make sure we don't access array out of bounds
-			if(y < 0 || x < 0 || x >= kAppWidth || y >= kAppHeight) continue;
-			
-			int dist = (x-center_x)*(x-center_x) + (y-center_y)*(y-center_y);
-			if(dist <= r2){
-				if((dist/49)%2 == 0){
-					int offset = 3*(x + y*kSurfaceSize);
-					pixels[offset] = 0;
-					pixels[offset+1] = 0;
-					pixels[offset+2] = 225;
-				}
-			}
-		}
-	}
-}*/
 
 /**The update() method updates the program before it is ran each
 time. Anything  that you want to appear when ran must be declared here.
@@ -281,15 +270,16 @@ void CatPicApp::update(){
 
 	//Clear the screen
 	clear(dataArray);
-
-	CreateRectangle(dataArray, 200,100,200,100);
-	drawLine(dataArray,80,600,400);
-	drawCircles(dataArray, 260, 190, 80);
-	drawCircle2(dataArray, 400,400,180);
-	drawCircle3(dataArray, 550, 195, 80);
-	makeLine(dataArray, 0, 0, 300, 500);
-	copyRectangle(dataArray,200,100,200,100,100);
-	selectiveBlur(dataArray);
+	//allowing objects to move
+	 draw_offset=draw_offset+10;
+       CreateRectangle(dataArray,10,10,100,100);
+       drawLine(dataArray,80,600,400);
+       drawCircles(dataArray,260+draw_offset, 190+draw_offset, 80);
+       drawCircle2(dataArray,400+draw_offset,400+draw_offset,180);
+       drawCircle3(dataArray,550+draw_offset, 195+draw_offset, 80);
+       makeLine(dataArray, 0, 0,300, 500);
+       selectiveBlur(dataArray);
+	   drawTriangle(dataArray, 60,120,140);
 	//brightness = brightness + .01;
 	//if(brightness>1)
 		//brightness=0;
@@ -301,6 +291,7 @@ void CatPicApp::setup(){
 	mySurface_ = new Surface(kSurfaceSize,kSurfaceSize,false);
 	//brightness = .1;
 	//tint =.1;
+	draw_offset=0;
 	
 }
 void CatPicApp::draw(){
@@ -310,7 +301,13 @@ void CatPicApp::draw(){
 	////Draw the surface
 	gl::draw(*mySurface_);
 	// clear out the window with black
-	//gl::clear( Color( .01, 2, .01 ) ); 
+	//gl::clear( Color( .01, 2, .01 ) );
+	//setting a timer so that the mickey face moves every second.
+	Timer t;
+       t.start();
+       while(t.getSeconds() < 1.00){
+       }
+       t.stop();
 
 }
 
