@@ -308,7 +308,7 @@ void CatPicApp::update(){
 	//needed to draw the application on the screen
 	uint8_t* dataArray = (*mySurface_).getData();
 	//allows for interaction with the triangle while the program is running 
-	drawTriangle(dataArray,tr_x, tr_y, tr_randSize);
+	drawTriangle(dataArray,tr_randSize, tr_x, tr_y);
 
 	//Clear the screen
 	clear(dataArray);
