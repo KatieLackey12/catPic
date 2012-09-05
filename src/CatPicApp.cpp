@@ -293,7 +293,7 @@ void CatPicApp:: makeLine(uint8_t* dataArray, int ptX0, int ptY0, int ptX1, int 
 	}
 }
 /**This method allows for interaction with the user while the 
-project is being ran.
+project is being ran. This fills one of the last section requirements
 */
 void CatPicApp::mouseDown( MouseEvent event ){	
 tr_randSize = Rand::randInt(0, 300);	
@@ -312,7 +312,7 @@ void CatPicApp::update(){
 
 	//Clear the screen
 	clear(dataArray);
-	//allowing objects to move
+	//allowing objects to move. This fills one of the last sections requirements 
 	 draw_offset=draw_offset+10;
        CreateRectangle(dataArray,10,10,100,100);
        drawLine(dataArray,80,600,400);
@@ -340,7 +340,7 @@ void CatPicApp::draw(){
 	////Draw the surface
 	gl::draw(*mySurface_);
 	// clear out the window with black
-	//gl::clear( Color( .01, 2, .01 ) );
+
 	//setting a timer so that the mickey face moves every second.
 		Timer t;
       t.start();
